@@ -9,7 +9,8 @@ RUN apk update && apk add --no-cache \
     unzip \
     libzip-dev \
     oniguruma-dev \
-    libpq-dev
+    libpq-dev \
+    nodejs npm
 
 RUN docker-php-ext-install pdo zip pgsql pdo_pgsql
 
@@ -22,13 +23,14 @@ WORKDIR /var/www/html
 # Laravelアプリをコピー
 COPY . .
 
+# NPM install
+RUN npm install \
+    && npm run build
+
 # Laravel初期設定
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
     && composer dump-autoload \
-    && php artisan key:generate \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+    && php artisan storage:link
 
 # 必要ポート公開
 EXPOSE 80
