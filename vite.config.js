@@ -9,4 +9,12 @@ export default defineConfig({
         }),
     ],
     base: '/build/',
+    server: {
+        hmr: {
+            host: 'localhost'
+        },
+        watch: {
+            usePolling: true
+        }
+    },
 });
